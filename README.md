@@ -117,30 +117,35 @@ MySQL Database (Railway)
 
 ## 📁 Project Structure
 
-Farm2You/
+```text
+Farm2You
 │
-├── frontend/
-│ ├── src/
-│ │ ├── api/
-│ │ ├── components/
-│ │ ├── context/
-│ │ ├── hooks/
-│ │ ├── pages/
-│ │ └── App.jsx
-│ │
-│ └── package.json
+├── frontend
+│   ├── src
+│   │   ├── api
+│   │   ├── components
+│   │   ├── context
+│   │   ├── hooks
+│   │   ├── pages
+│   │   └── App.jsx
+│   ├── package.json
+│   └── vite.config.js
 │
-├── backend/
-│ ├── controllers/
-│ ├── middleware/
-│ ├── routes/
-│ ├── config/
-│ ├── models/
-│ └── server.js
+├── backend
+│   ├── config
+│   ├── controllers
+│   ├── middleware
+│   ├── routes
+│   ├── server.js
+│   └── package.json
+│
+├── screenshots
+│   ├── homepage.png
+│   ├── farmer-dashboard.png
+│   └── consumer-dashboard.png
 │
 └── README.md
-
----
+```
 
 ## ⚙️ Installation
 
