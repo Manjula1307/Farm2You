@@ -1,270 +1,309 @@
-# 🌱 Farm2You - Farmer Direct Sales Portal
+# 🌾 Farm2You — Farm to Consumer Marketplace
 
-A full-stack web application that connects farmers directly with consumers, eliminating middlemen and enabling fair pricing, fresh produce, and transparent transactions.
+> A full-stack marketplace that directly connects farmers with consumers — no middlemen, fairer prices, fresher produce.
 
-## 🚀 Live Demo
+**🔗 Live Demo:** [https://farm2-you-frontend.vercel.app](https://farm2-you-frontend.vercel.app)
+**📦 Repository:** [https://github.com/Manjula1307/Farm2You](https://github.com/Manjula1307/Farm2You)
 
-Frontend: https://farm2-you-frontend.vercel.app
+---
 
 ## 📸 Screenshots
 
-| Home Page | Farmer Dashboard |
-|------------|------------|
-| ![](./screenshots/homepage.png) | ![](./screenshots/farmer-dashboard.png) |
+| Landing Page | Consumer Shop |
+|---|---|
+| ![Homepage](./screenshots/homepage.png) | ![Consumer](./screenshots/consumer-dashboard.png) |
 
-| Consumer Dashboard |
-|------------|
-| ![](./screenshots/consumer-dashboard.png) |
-
-## 📂 GitHub Repository
-
-https://github.com/Manjula1307/Farm2You
+| Farmer Dashboard |
+|---|
+| ![Farmer](./screenshots/farmer-dashboard.png) |
 
 ---
 
-## 📖 Overview
+## 💡 Why Farm2You?
 
-Farm2You is a role-based marketplace where farmers can list agricultural products and consumers can browse, purchase, and track orders.
+Traditional supply chains have 3–4 middlemen between a farmer and the end consumer — each one taking a cut, driving up prices and reducing farmer earnings. Farm2You eliminates this entirely by creating a direct digital marketplace.
 
-The platform aims to reduce dependency on intermediaries and create a direct digital connection between producers and buyers.
+- **Farmers earn more** — no commission taken by the platform
+- **Consumers pay less** — no middleman markup
+- **Fresher produce** — direct farm-to-door delivery
 
 ---
 
-## ✨ Key Features
+## ✨ Features
 
-### Authentication & Authorization
+### 🔐 Authentication & Authorization
+- JWT-based secure authentication
+- Role-based access — Farmer and Consumer are completely separate experiences
+- Protected API routes with middleware
+- Passwords hashed with bcrypt
 
-* Secure JWT-based authentication
-* Role-based access control
-* Farmer and Consumer accounts
-* Protected API routes
+### 👨‍🌾 Farmer Portal
+- Dedicated farmer dashboard (farmers never see the consumer shop)
+- Add, edit, and delete produce listings
+- Set price per unit, quantity, category, and description
+- View and manage incoming orders from consumers
+- Update order status — Confirm → Delivered
 
-### Farmer Features
+### 🛒 Consumer Shop
+- Clean product browsing with category filter and search
+- Browse farmers and filter produce by farmer
+- Rich order flow — quantity picker, delivery address, preferred time slot, payment method, note to farmer
+- 2-step order confirmation with full summary before placing
+- Low stock warnings on product cards
+- Out-of-stock items shown but disabled
+- Order history with expandable details and live status tracking
 
-* Register and manage farmer profile
-* Add new produce listings
-* Update product details
-* Manage inventory
-* View incoming orders
-* Track sales activity
-
-### Consumer Features
-
-* Browse available produce
-* Search and view product listings
-* Place orders directly from farmers
-* View order history
-* Track purchase activity
-
-### Platform Features
-
-* Responsive design
-* Secure password hashing using bcrypt
-* RESTful API architecture
-* Persistent MySQL database
-* Cloud deployment
+### 🏠 Guest Landing Page
+- Marketing landing page for unauthenticated users
+- Clear explanation of the platform for both roles
+- Separate CTAs for farmers and consumers
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-
-* React.js
-* Vite
-* Tailwind CSS
-* Axios
-* Lucide React Icons
+| Technology | Usage |
+|---|---|
+| React.js | UI framework |
+| Vite | Build tool |
+| Tailwind CSS | Styling |
+| Axios | HTTP client with JWT interceptor |
+| React Context API | Auth state management |
+| Lucide React | Icons |
 
 ### Backend
-
-* Node.js
-* Express.js
-* JWT Authentication
-* bcrypt.js
+| Technology | Usage |
+|---|---|
+| Node.js + Express.js | REST API server |
+| JWT (jsonwebtoken) | Authentication tokens |
+| bcryptjs | Password hashing |
+| mysql2 | MySQL database driver |
+| dotenv | Environment config |
 
 ### Database
-
-* MySQL
+| Technology | Usage |
+|---|---|
+| MySQL | Relational database |
+| Railway | Cloud MySQL hosting |
 
 ### Deployment
-
-* Vercel (Frontend)
-* Render (Backend)
-* Railway (MySQL Database)
+| Service | What it hosts |
+|---|---|
+| Vercel | React frontend |
+| Render | Node.js backend |
+| Railway | MySQL database |
 
 ---
 
 ## 🏗️ System Architecture
 
-Frontend (React + Vite)
-↓
-REST API (Node.js + Express)
-↓
+```
+User Browser
+     │
+     ▼
+React Frontend (Vercel)
+     │  Axios + JWT
+     ▼
+Express REST API (Render)
+     │  mysql2
+     ▼
 MySQL Database (Railway)
+```
 
 ---
 
 ## 🔐 Authentication Flow
 
-1. User registers as Farmer or Consumer
-2. Password is hashed using bcrypt
-3. JWT token is generated upon login
-4. Token is stored in localStorage
-5. Protected routes verify JWT before access
+1. User registers with name, email, password, and role (farmer/consumer)
+2. Password is hashed with bcrypt (12 rounds)
+3. JWT token generated on login/register
+4. Token stored in localStorage
+5. Axios interceptor attaches `Authorization: Bearer <token>` to every request
+6. Backend middleware verifies token and checks role before allowing access
+
+---
+
+## 🗄️ Database Schema
+
+```sql
+users         — id, name, email, password, role, phone, address
+produce       — id, farmer_id, name, description, category,
+                price_per_unit, unit, quantity_available, image_url, is_available
+orders        — id, consumer_id, total_amount, status, delivery_address
+order_items   — id, order_id, produce_id, farmer_id, quantity,
+                price_per_unit, subtotal
+```
 
 ---
 
 ## 📁 Project Structure
 
-```text
-Farm2You
-│
-├── frontend
-│   ├── src
-│   │   ├── api
-│   │   ├── components
-│   │   ├── context
-│   │   ├── hooks
-│   │   ├── pages
-│   │   └── App.jsx
+```
+Farm2You/
+├── frontend/
+│   ├── src/
+│   │   ├── api/            # Axios instance with JWT interceptor
+│   │   ├── components/     # ProductCard, FarmerCard, ContactModal
+│   │   ├── context/        # AuthContext (login, register, logout)
+│   │   ├── hooks/          # useProduce (fetches from API)
+│   │   ├── pages/          # AuthPage, ConsumerHome, FarmerDashboard, MyOrders
+│   │   └── App.jsx         # Role-based routing
 │   ├── package.json
 │   └── vite.config.js
 │
-├── backend
-│   ├── config
-│   ├── controllers
-│   ├── middleware
-│   ├── routes
-│   ├── server.js
-│   └── package.json
-│
-├── screenshots
-│   ├── homepage.png
-│   ├── farmer-dashboard.png
-│   └── consumer-dashboard.png
+├── backend/
+│   ├── config/
+│   │   ├── db.js           # MySQL connection pool
+│   │   └── schema.sql      # Database schema
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── produceController.js
+│   │   └── orderController.js
+│   ├── middleware/
+│   │   └── auth.js         # JWT verify, isFarmer, isConsumer
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── produceRoutes.js
+│   │   └── orderRoutes.js
+│   └── server.js
 │
 └── README.md
 ```
 
-## ⚙️ Installation
+---
 
-### Clone Repository
+## 🔌 API Reference
+
+### Auth
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/api/auth/register` | Public | Register as farmer or consumer |
+| POST | `/api/auth/login` | Public | Login and get JWT token |
+| GET | `/api/auth/me` | Protected | Get current user profile |
+
+### Produce
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| GET | `/api/produce` | Public | Browse all available produce |
+| GET | `/api/produce/:id` | Public | Get single produce detail |
+| GET | `/api/produce/farmer/my-listings` | Farmer only | Get own listings |
+| POST | `/api/produce` | Farmer only | Add new listing |
+| PUT | `/api/produce/:id` | Farmer only | Update listing |
+| DELETE | `/api/produce/:id` | Farmer only | Delete listing |
+
+### Orders
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/api/orders` | Consumer only | Place an order |
+| GET | `/api/orders/my-orders` | Consumer only | View order history |
+| GET | `/api/orders/:id` | Consumer only | View single order |
+| GET | `/api/orders/farmer/incoming` | Farmer only | View incoming orders |
+| PUT | `/api/orders/:id/status` | Farmer only | Update order status |
+
+---
+
+## ⚙️ Local Setup
+
+### Prerequisites
+- Node.js v18+
+- MySQL 8.0+
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Manjula1307/Farm2You.git
 cd Farm2You
 ```
 
-### Frontend Setup
+### 2. Set up the database
 
 ```bash
-cd frontend
-
-npm install
-
-npm run dev
+mysql -u root -p
 ```
 
-### Backend Setup
+```sql
+CREATE DATABASE farm2you;
+USE farm2you;
+-- Run the contents of backend/config/schema.sql
+```
+
+### 3. Backend setup
 
 ```bash
 cd backend
-
 npm install
-
-npm run dev
 ```
 
----
-
-## Environment Variables
-
-### Backend (.env)
+Create `backend/.env`:
 
 ```env
 PORT=5000
-
-DB_HOST=your_host
-DB_PORT=your_port
-DB_USER=your_user
+DB_HOST=localhost
+DB_USER=root
 DB_PASSWORD=your_password
-DB_NAME=your_database
-
+DB_NAME=farm2you
 JWT_SECRET=your_secret_key
 JWT_EXPIRES_IN=7d
 ```
 
-### Frontend (.env)
-
-```env
-VITE_API_URL=https://your-backend-url/api
+```bash
+npm run dev
 ```
 
----
+### 4. Frontend setup
 
-## API Endpoints
+```bash
+cd frontend
+npm install
+```
 
-### Authentication
+Create `frontend/.env`:
 
-| Method | Endpoint           | Description      |
-| ------ | ------------------ | ---------------- |
-| POST   | /api/auth/register | Register user    |
-| POST   | /api/auth/login    | Login user       |
-| GET    | /api/auth/me       | Get current user |
+```env
+VITE_API_URL=http://localhost:5000/api
+```
 
-### Produce
+```bash
+npm run dev
+```
 
-| Method | Endpoint                |
-| ------ | ----------------------- |
-| GET    | /api/farmer/my-listings |
-| POST   | /api/farmer/listings    |
-| GET    | /api/produce            |
-
-### Orders
-
-| Method | Endpoint       |
-| ------ | -------------- |
-| POST   | /api/orders    |
-| GET    | /api/orders/my |
+Frontend: `http://localhost:5173`
+Backend: `http://localhost:5000`
 
 ---
 
-## Challenges Solved
+## 🚀 Deployment
 
-* Implemented secure JWT authentication
-* Built role-based user access
-* Connected React frontend with Express backend
-* Integrated Railway MySQL database with cloud deployment
-* Managed API communication using Axios
-* Deployed full-stack application across multiple cloud services
-
----
-
-## Future Improvements
-
-* Payment Gateway Integration
-* Real-time Order Tracking
-* Product Reviews & Ratings
-* Farmer Analytics Dashboard
-* Image Upload Support
-* Notification System
-* AI-Based Produce Recommendations
+| Service | Config |
+|---|---|
+| **Vercel** | Connect GitHub repo → set `VITE_API_URL` to Render backend URL |
+| **Render** | Web Service → Node → set all backend env variables |
+| **Railway** | MySQL plugin → copy connection string to Render env vars |
 
 ---
 
-## Author
+## 🔮 Future Improvements
 
-Manjula
-
-Full Stack Developer | React.js | Node.js | MySQL
-
-LinkedIn: https://www.linkedin.com/in/manjula-satapathi
-
-GitHub: https://github.com/Manjula1307
+- [ ] Payment gateway integration (Razorpay)
+- [ ] Real-time order tracking with WebSockets
+- [ ] Product image upload (Cloudinary)
+- [ ] Farmer analytics dashboard with charts
+- [ ] Product reviews and ratings
+- [ ] Push notifications for order updates
+- [ ] AI-based produce recommendations
 
 ---
 
-## License
+## 👩‍💻 Author
 
-This project is built for educational and portfolio purposes.
+**Manjula Satapathi** — Full Stack Developer
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/manjula-satapathi)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/Manjula1307)
+
+---
+
+## 📄 License
+
+Built for educational and portfolio purposes.
